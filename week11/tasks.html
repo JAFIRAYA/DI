@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tasks</title>
+  <style>
+    .completed {
+      color: green;
+    }
+    .overdue {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Tasks</h1>
+  <ul id="taskList"></ul>
+
+  <script>
+  
+window.addEventListener("DOMContentLoaded", function() {
+  var tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+
+
+  tasks.sort(function(a, b) {
+    return a.startDateTime - b.startDateTime;
+  });
+
+  var taskList = document.getElementById("taskList");
+
+  tasks.forEach(function(task) {
+    var listItem = document.createElement("li");
+    var taskStatus = task.isCompleted ? "completed" : "";
+    var currentDate = new Date();
+    var daysRemaining = Math.ceil((task.endDateTime - currentDate) / (1000 * 60 * 60 * 24));
+
+    if (!task.isCompleted && task.endDateTime < currentDate) {
+      listItem.classList.add("overdue");
+    }
+
+    listItem.innerHTML = `
+      <span class="${taskStatus}">${task.name}</span> - 
+      Start Date: ${task.startDateTime.toLocaleString()} - 
+      Days Remaining: ${daysRemaining}
+      <button class="deleteBtn">X</button>
+      <button class="editBtn">Edit</button>
+      <div class="description">${task.description}</div>
+    `;
+
+    var taskName = listItem.querySelector(".description");
+    var deleteBtn = listItem.querySelector(".deleteBtn");
+    var editBtn = listItem.querySelector(".editBtn");
+
+    deleteBtn.addEventListener("click", function() {
+      if (confirm("Are you sure you want to delete this task?")) {
+        var index = tasks.indexOf(task);
+        tasks.splice(index, 1);
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        listItem.remove();
+      }
+    });
+
+    editBtn.addEventListener("click", function() {
+      var newDescription = prompt("Enter the new description:", task.description);
+      if (newDescription !== null) {
+        task.description = newDescription;
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        taskName.textContent = newDescription;
+      }
+    });
+
+    listItem.addEventListener("click", function() {
+      listItem.classList.toggle("expanded");
+    });
+
+    taskList.appendChild(listItem);
+  });
+});
+
+  </script>
+</body>
+</html>
