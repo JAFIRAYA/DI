@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <%- include('../partials/head') %>
+
+<%- include('../partials/header') %>
+
+<h1>Search</h1>
+
+<form action="/search/title" method="post">
+  <label for="title">Search by Title:</label>
+  <input type="text" id="title" name="title" required>
+  <button type="submit">Search</button>
+</form>
+
+<form action="/search/category" method="post">
+  <label for="category">Search by Category:</label>
+  <select id="category" name="category" required>
+    <option value="category1">Category 1</option>
+    <option value="category2">Category 2</option>
+    <option value="category3">Category 3</option>
+  </select>
+  <button type="submit">Search</button>
+</form>
+
+<%- include('../partials/posts', { posts: posts }) %>
+
+<%- include('../partials/footer') %>
+  
+</body>
+</html>
+
+
+
+
+
